@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exam Scheduler Pro | Premium 3-Column Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href='https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.css' rel='stylesheet' />
+    <link rel="stylesheet" href="style.css?v=2.1">
+</head>
+<body>
+    <div class="bg-blobs">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
+    </div>
+
+    <div id="toast-container"></div>
+    
+    <div class="app-container">
+        <header class="top-bar glass d-flex justify-content-between align-items-center px-4">
+            <div class="brand">
+                <h2 class="m-0 grad-text">SchedulerPro</h2>
+                <div class="badge-premium">PREMIUM 3-COLUMN SYSTEM</div>
+            </div>
+            <div class="d-flex gap-3 align-items-center">
+                <div class="algo-pill glass">
+                    <select id="algo-choice" class="clean-select">
+                        <option value="greedy">Greedy Method</option>
+                        <option value="backtracking">Backtracking Method</option>
+                    </select>
+                </div>
+                <button id="btn-run-algo" class="btn btn-premium">
+                    <span>⚡ Generate Schedule</span>
+                </button>
+            </div>
+        </header>
+
+        <div class="dashboard-grid-3">
+            <!-- COLUMN 1: CONFIG & STATS -->
+            <aside class="panel panel-side-left glass">
+                <div class="panel-header">
+                    <h5 class="section-title"><span class="icon">⚙️</span> Control Panel</h5>
+                </div>
+                <div class="panel-content">
+                    <div class="upload-zone-premium mb-3" id="drop-zone">
+                        <div class="inner">
+                            <span class="icon-big">📁</span>
+                            <label class="fw-700 small d-block">Student Database</label>
+                            <span id="upload-status" class="tiny text-muted">Upload JSON</span>
+                            <div id="file-success" class="upload-badge d-none">Verified ✓</div>
+                            <input type="file" id="file-input" hidden accept=".json">
+                            <button class="btn btn-action btn-sm w-100 mt-2">Import</button>
+                        </div>
+                    </div>
+
+                    <div class="premium-card mb-3">
+                        <h6 class="small-title mb-2">Individual Timetable</h6>
+                        <div class="d-flex flex-column gap-2">
+                            <select id="student-dropdown" class="clean-select glass w-100 p-2">
+                                <option value="">Select Student</option>
+                            </select>
+                            <button id="btn-download-individual" class="btn btn-premium w-100 py-2" disabled>
+                                <span>📄 Download PDF</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="chart-container-premium">
+                        <h6 class="small-title mb-2 text-center">Load Profile</h6>
+                        <div style="height: 180px;">
+                            <canvas id="slot-pie-chart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- COLUMN 2: CALENDAR & ANALYSIS -->
+            <div class="col-main flex-col">
+                <main class="panel calendar-panel glass mb-3">
+                    <div class="panel-header">
+                        <h5 class="section-title"><span class="icon">📅</span> Timetable View</h5>
+                    </div>
+                    <div class="panel-content">
+                        <div class="calendar-wrapper">
+                            <div id="calendar"></div>
+                        </div>
+                    </div>
+                </main>
+
+                <section id="analysis-panel" class="panel analysis-panel glass">
+                    <div class="panel-header d-flex justify-content-between align-items-center">
+                        <h5 class="section-title"><span class="icon">📈</span> Metrics</h5>
+                        <button class="toggle-btn-small" onclick="toggleSection('analysis-panel')">+/-</button>
+                    </div>
+                    <div class="panel-content collapse-target">
+                        <div class="metric-grid-compact">
+                            <div class="m-box"><span>Time</span><span id="metric-exec-time" class="accent">0ms</span></div>
+                            <div class="m-box"><span>Slots</span><span id="metric-slots" class="success">0</span></div>
+                        </div>
+                        <div class="mt-3">
+                            <div style="height: 100px;"><canvas id="exec-time-bar-chart"></canvas></div>
+                        </div>
+                        <div class="insight-strip-compact mt-3">
+                            <p id="summary-insight-text" class="m-0 tiny">Intelligence ready.</p>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <!-- COLUMN 3: SLOTS & GRAPH -->
+            <div class="col-right flex-col">
+                <aside class="panel slots-panel glass mb-3">
+                    <div class="panel-header">
+                        <h5 class="section-title"><span class="icon">📌</span> Assignments</h5>
+                    </div>
+                    <div class="panel-content">
+                        <div id="slot-details-container" class="slot-list-premium">
+                            <div class="empty-state">
+                                <span class="icon-fade">⏳</span>
+                                <p>Awaiting generation...</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="footer-actions p-2 d-flex gap-2">
+                        <button id="btn-download-all" class="btn btn-export w-100 d-none">
+                            <span>📥 PDF</span>
+                        </button>
+                        <button id="btn-download-csv" class="btn btn-export-mini w-100 d-none">
+                            <span>📊 CSV</span>
+                        </button>
+                    </div>
+                </aside>
+
+                <section class="panel graph-panel-v3 glass">
+                    <div class="panel-header">
+                        <h5 class="section-title"><span class="icon">🕸️</span> Conflicts</h5>
+                    </div>
+                    <div class="panel-content">
+                        <div id="d3-container" class="graph-viewport"></div>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.js'></script>
+    <script src="script.js?v=2.1"></script>
+</body>
+</html>
